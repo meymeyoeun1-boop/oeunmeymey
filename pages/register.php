@@ -1,81 +1,70 @@
-<!DOCTYPE html>
-<html lang="en">
+<?php
+$nameErr = $username = $passwd = '';
+$name = $username = '';
+    if(isset($_POST['name'],$_POST['username'],$_POST['passwd'],$_POST['confirmPasswd'])) {
+        $name = trim($_POST['name']);
+        $username = trim($_POST['username']);
+        $passwd = trim($_POST['passwd']);
+        $confirmPasswd =trim($_POST['confirmPasswd']);
+        if(empty($name)){
+            $nameErr = 'please input name';
+        }
+        if(empty($username)){
+            $usernameErr = 'please input username';
+        }
+        if(empty($passwd)){
+            $passwdErr = 'please input passwd';
+        }
+        if($passwd !== $confirmPasswd){
+            $passwdErr = 'password does not match!';
+        }
+        if(usernameExists($username)){
+            $usernameErr = 'Please choose another username';
+        }
+        if(empty($nameErr) && empty($usernameErr) && empty($passwdErr)){
+            if (registerUser($name,$username,$passwd)){
+                $name = $username = '';
+                echo'<div class"alert alert-success" role="alert">
+                Registration successful! You cal now <a href="./?page=login" class="alert-link";
+                </div>';
+            }else{
+                echo '<div class="alert alert-danger" role="alert">
+                Registration failed! Please try agsin.
+                </div>';
+            }
+        }
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
-
-</head>
-
-<body>
-
-    <nav class="navbar navbar-expand-lg bg-body-tertiary">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="#">Navbar</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
-                aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="#">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#">Link</a>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
-                            aria-expanded="false">
-                            Auth
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="./login.php">Login</a></li>
-                            <li><a class="dropdown-item" href="./register.php">Register</a></li>
-                        </ul>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link disabled" aria-disabled="true">Disabled</a>
-                    </li>
-                </ul>
-                <form class="d-flex" role="search">
-                    <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search" />
-                    <button class="btn btn-outline-success" type="submit">Search</button>
-                </form>
-            </div>
+    
+    }
+?>
+    
+ <form method="post" action="./?page=register">
+    <div class="col-md-8 col-lg-6 mx-auto">
+         <h3>Register Page</h3>
+        <div class="mb-3">
+            <label class="form-label">Name</label>
+            <input name="name" value="<?php echo $nameErr ?>"  type="text" class="form-control
+             <?php echo empty($nameErr) ? '' : 'is-invalid' ?>">
+            <div class ="invalid-feedback"><?php echo $nameErr ?></div>
         </div>
-    </nav>
-
-    <form>
-        <div class="col-md-8 col-lg-6 mx-auto">
-            <h3>Register Form</h3>
-            <div class="mb-3">
-                <label for="exampleInputEmail1" class="form-label">Email address</label>
-                <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp">
-                <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
-            </div>
-            <div class="mb-3">
-                <label for="exampleInputPassword1" class="form-label">Password</label>
-                <input type="password" class="form-control" id="exampleInputPassword1">
-            </div>
-            <div class="mb-3">
-                <label for="exampleInputPassword1" class="form-label">Confirm Password</label>
-                <input type="password" class="form-control" id="exampleInputPassword1">
-            </div>
+        <div class="mb-3">
+            <label class="form-label">username</label>
+            <input name="username" value="<?php echo $nameErr ?>" type="text" class="form-control">
+            <?php echo empty($usernameErr) ? '' : 'is-invalid' ?>">
+             <div class ="invalid-feedback"><?php echo $usernameErr ?></div>
+        </div>
+        <div class="mb-3">
+            <label class="form-label">Password</label>
+            <input name="passwd" type="password" class="form-control">
+            <?php echo empty($passwdErr) ? '' : 'is-invalid' ?>">
+            <div class ="invalid-feedback"><?php echo $passwdErr ?></div>
+        </div>
+        <div class="mb-3">
+            <label class="form-label" >Confirm Password</label>
+            <input name="confirmPasswd"  type="password" class="form-control">
+            <?php echo empty($confirmPasswdErr) ? '' : 'is-invalid' ?>">
+            <div class ="invalid-feedback"><?php echo $confirmPasswdErr ?></div>
+        </div>
             <button type="submit" class="btn btn-primary">Submit</button>
         </div>
     </form>
-
-
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
-        crossorigin="anonymous"></script>
-</body>
-
-</html>
